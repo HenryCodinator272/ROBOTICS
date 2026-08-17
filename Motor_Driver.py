@@ -81,14 +81,17 @@ def stop():
     motor2Speed.ChangeDutyCycle(0)
     print('Stopped')
 
-try:
-    forward(10)
-    time.sleep(2)
-    stop()
-finally:
-    motor1Speed.stop()
-    motor2Speed.stop()
-    GPIO.cleanup()
+
+if __name__ == '__main__':
+    try:
+        forward(10)
+        time.sleep(2)
+        stop()
+    finally:
+        motor1Speed.stop()
+        motor2Speed.stop()
+        GPIO.cleanup()
+
 
 
 
