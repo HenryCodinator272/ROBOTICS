@@ -17,7 +17,16 @@ motor2Speed = GPIO.PWM(31, 1000)
 motor1Speed.start(0)
 motor2Speed.start(0)
 
+def check_speed(speed):
+    if not 0 <= speed <= 100:
+        raise ValueError('Speed must be between 0 and 100')
+
+def check_radius(radius):
+    if radius < 0:
+        raise ValueError('Only accepts non-negative Radius')
+
 def forward(speed):
+    check_speed(speed)
     print(f'Going forward at {speed} speed')
     GPIO.output(11, True)
     GPIO.output(13, True)
@@ -26,6 +35,7 @@ def forward(speed):
     motor2Speed.ChangeDutyCycle(speed)
 
 def backward(speed):
+    check_speed(speed)
     print(f'Going backward at {speed} speed')
     GPIO.output(11, False)
     GPIO.output(13, False)
@@ -34,6 +44,8 @@ def backward(speed):
     motor2Speed.ChangeDutyCycle(speed)
 
 def left_forward(speed, r = 0, diff = 144): #diff --> distance_between_wheels ... r --> radius
+    check_speed(speed)
+    check_radius(r)
     GPIO.output(11, True)
     GPIO.output(13, True)
 
@@ -44,6 +56,8 @@ def left_forward(speed, r = 0, diff = 144): #diff --> distance_between_wheels ..
     motor2Speed.ChangeDutyCycle(outer_wheel_speed)
 
 def left_backward(speed, r = 0, diff = 144):
+    check_speed(speed)
+    check_radius(r)
     GPIO.output(11, False)
     GPIO.output(13, False)
 
@@ -54,6 +68,8 @@ def left_backward(speed, r = 0, diff = 144):
     motor2Speed.ChangeDutyCycle(outer_wheel_speed)
 
 def right_forward(speed, r=0, diff=144):  # diff --> distance_between_wheels ... r --> radius
+    check_speed(speed)
+    check_radius(r)
     GPIO.output(11, True)
     GPIO.output(13, True)
 
@@ -64,6 +80,8 @@ def right_forward(speed, r=0, diff=144):  # diff --> distance_between_wheels ...
     motor2Speed.ChangeDutyCycle(inner_wheel_speed)
 
 def right_backward(speed, r=0, diff=144):
+    check_speed(speed)
+    check_radius(r)
     GPIO.output(11, False)
     GPIO.output(13, False)
 
