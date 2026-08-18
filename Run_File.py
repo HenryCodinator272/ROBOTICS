@@ -4,14 +4,24 @@ import time
 import torch
 import training
 import os
+import RPi.GPIO as GPIO
 from torchvision import transforms
 from model import Bottle_Detection_Model
 from PIL import Image
-
+import motor_driver
+import ultrasonic_sensor
 
 def main():
     #initialization
     motor_active = False
+    c = 0
+
+    lf = False
+    rf = False
+    b = False
+    f = False
+    scan = False
+
     picam2 = Picamera2()
     config = picam2.create_video_configuration() #picam2.create_still_configuration()
     picam2.configure(config)
@@ -60,27 +70,76 @@ def main():
             cv2.imshow('Live Bottle Detection', frame)
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
-
-
+            if c == 0:
+                c = 20
+                if ultrasonic_sensor.run_ping() < 20:
+                    break
+            else:
+                c -= 1
             ### MOVEMENT LOGIC ###
             if bottle_detected:
-                x_center = (x1_scaled + x2_scaled) // 2 - f_width
-                y_center = (y1_scaled + y2_scaled) // 2 - f_height
+                x_center = (x1_scaled + x2_scaled) // 2 - f_width // 2
+                y_center = (y1_scaled + y2_scaled) // 2 - f_height // 2
                 width = int(w / 224 * f_width)
                 height = int(h / 224 * f_height)
+                #far = True if height > f_height / 2 else False
 
-                if x_center < 0:
-                    if abs(x_center) > f_width / 4:
-                        pass #big left turn
-                    else:
-                        pass #small left turn
-                else:
-                    if abs(x_center) > f_width / 4:
-                        pass #big right turn
-                    else:
-                        pass #small right turn
+                if x_center < -20 and lf == False:
+
+                    lf = True
+                    rf = False
+                    b = False
+                    f = False
+                    scan = False
+
+                    if motor_active:
+                        motor_driver.stop()
+                    motor_active = True
+                    motor_driver.left_forward(40, 20)
+                elif x_center > 20 and rf == False:
+
+                    lf = False
+                    rf = True
+                    b = False
+                    f = False
+                    scan = False
+
+                    if motor_active:
+                        motor_driver.stop()
+                    motor_active = True
+                    motor_driver.right_forward(40, 20)
+                elif -20 <= x_center <= 20 and f == False:
+
+                    lf = False
+                    rf = False
+                    b = False
+                    f = True
+                    scan = False
+
+                    if motor_active:
+                        motor_driver.stop()
+                    motor_active = True
+                    motor_driver.forward(40)
+
+            elif not bottle_detected:
+
+                    if not scan:
+
+                        lf = False
+                        rf = False
+                        b = False
+                        f = False
+                        scan = True
+
+                        if motor_active:
+                            motor_driver.stop()
+                        motor_active = True
+                        motor_driver.scan(10)
+
 
 
     finally:
+        motor_driver.stop()
+        GPIO.cleanup()
         cv2.destroyAllWindows()
         picam2.stop()

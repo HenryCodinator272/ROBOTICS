@@ -91,6 +91,15 @@ def right_backward(speed, r=0, diff=144):
     motor1Speed.ChangeDutyCycle(outer_wheel_speed)
     motor2Speed.ChangeDutyCycle(inner_wheel_speed)
 
+def scan(speed):
+    check_speed(speed)
+    print(f'Scanning at {speed} speed')
+    GPIO.output(11, True)
+    GPIO.output(13, False)
+
+    motor1Speed.ChangeDutyCycle(speed)
+    motor2Speed.ChangeDutyCycle(speed)
+
 def stop():
     GPIO.output(11, False)
     GPIO.output(13, False)
