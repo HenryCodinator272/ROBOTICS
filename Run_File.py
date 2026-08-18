@@ -78,7 +78,7 @@ def main():
             if c == 0:
                 if time.time() > blind_scan_end_time:
                     ping = ultrasonic_sensor.run_ping()
-                    print(ping)
+                    print(f'PING: {ping} cm')
                     if ping < 20:
                         print("TOO CLOSE! Initiating 1 second escape spin")
                         if not scan:
@@ -100,7 +100,9 @@ def main():
                 c = 20
             else:
                 c -= 1
+
             ### MOVEMENT LOGIC ###
+
             if bottle_detected:
 
                 x_center = (x1_scaled + x2_scaled) // 2 - f_width // 2

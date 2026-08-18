@@ -106,6 +106,8 @@ def stop():
 
     motor1Speed.ChangeDutyCycle(0)
     motor2Speed.ChangeDutyCycle(0)
+
+    time.sleep(0.02)
     print('Stopped')
 
 
