@@ -1,0 +1,22 @@
+import torch
+import torch.nn as nn
+from torchvision import models
+
+class Bottle_Detection_Model(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.resnet = models.resnet18( weights = 'DEFAULT')
+        self.resnet.fc = nn.Linear(512, 5)
+        print(self.resnet)
+
+    def forward(self, input):
+        out = self.resnet(input)
+        box = torch.sigmoid(out[:, :4])
+        confidence = out[:, 4]
+        return torch.cat((box, confidence.unsqueeze(1)), dim=1)
+
+
+
+
+if __name__ == '__main__':
+    attempt = Bottle_Detection_Model()
