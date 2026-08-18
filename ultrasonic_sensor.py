@@ -5,7 +5,7 @@ except ImportError:
     import SimulRPi.GPIO as GPIO
 
 #Channel Numbers instead of Location Number (numbers match on board)
-GPIO.setmode(GPIO.BCM)
+GPIO.setmode(GPIO.BOARD)
 trigPin = 23
 echoPin = 24
 GPIO.setup(trigPin, GPIO.OUT)

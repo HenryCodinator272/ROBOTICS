@@ -70,14 +70,15 @@ def display_pred_box(pred, image_tensor):
         w,
         h,
         fill=False,
-        linewidth=2
+        linewidth=2,
+        edgecolor = 'red'
     )
 
     ax.add_patch(box)
     ax.axis("off")
     os.makedirs('visuals', exist_ok=True)
     plt.savefig(os.path.join('visuals', 'test_result.jpg'))
-    plt.close(fig)
+    plt.close('all')
 
 
 def main(epochs = 20, verbose = False):
@@ -188,13 +189,7 @@ def main(epochs = 20, verbose = False):
 
         if f1_score > best_f1:
             best_f1 = f1_score
-            torch.save({
-                'epoch': i + 1,
-                'model_state_dict': model.state_dict(),
-                'optimizer_state_dict': optimizer.state_dict(),
-                'train_loss': train_loss,
-                'evaluation_loss': evaluation_loss,
-                'f1': f1_score}, 'best_bottle_model.pth')
+            torch.save(model.state_dict(), 'best_bottle_model.pth')
 
 
 
