@@ -60,7 +60,8 @@ def run_ping():
 
                 #time to rest
                 time.sleep(delayTime)
-
+    if len(distances) == 0:
+        return float('inf')
     distances.sort()
     return distances[len(distances) // 2]
 

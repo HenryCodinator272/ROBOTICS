@@ -103,7 +103,7 @@ def main(epochs = 20, verbose = False):
     for params in model.resnet.fc.parameters():
         params.requires_grad = True
 
-    optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
+    optimizer = torch.optim.Adam(filter(lambda p: p.requires_grad, model.parameters()), lr=0.001)
 
     train_loss, evaluation_loss = [], []
     best_f1 = 0.0

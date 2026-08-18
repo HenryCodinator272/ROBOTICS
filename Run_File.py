@@ -14,6 +14,7 @@ import ultrasonic_sensor
 def main():
     #initialization
     motor_active = False
+    blind_scan_end_time = 0.0
     c = 0
 
     lf = False
@@ -32,12 +33,15 @@ def main():
     transform = transforms.Compose([transforms.Resize((224, 224)),
                                     transforms.ToTensor(),
                                     transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])])
+
     if os.path.exists('best_bottle_model.pth'):
         weights = torch.load('best_bottle_model.pth', map_location = device, weights_only=True)
         model.load_state_dict(weights)
         model.to(device)
         model.eval()
     else:
+        picam2.stop()
+        GPIO.cleanup()
         return 'No Weight Dictionary to Load:\nPlease Accumulate More Training Data.'
 
     #loop
@@ -57,12 +61,13 @@ def main():
             vals = training.create_box(out.squeeze(0))
             if vals:
                 x1, x2, y1, y2, w, h = vals
-                bottle_detected = True
 
                 x1_scaled = int(x1 / 224 * f_width)
                 x2_scaled = int(x2 / 224 * f_width)
                 y1_scaled = int(y1 / 224 * f_height)
                 y2_scaled = int(y2 / 224 * f_height)
+
+                bottle_detected = True
 
                 cv2.rectangle(frame, (x1_scaled, y1_scaled),
                               (x2_scaled, y2_scaled), (0, 255, 0), 2)
@@ -71,13 +76,33 @@ def main():
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
             if c == 0:
+                if time.time() > blind_scan_end_time:
+                    ping = ultrasonic_sensor.run_ping()
+                    print(ping)
+                    if ping < 20:
+                        print("TOO CLOSE! Initiating 1 second escape spin")
+                        if not scan:
+
+                            lf = False
+                            rf = False
+                            b = False
+                            f = False
+                            scan = True
+
+                            if motor_active:
+                                motor_driver.stop()
+                            motor_active = True
+                            motor_driver.scan(10)
+                            blind_scan_end_time = time.time() + 1.0
+                        continue
+                else:
+                    continue
                 c = 20
-                if ultrasonic_sensor.run_ping() < 20:
-                    break
             else:
                 c -= 1
             ### MOVEMENT LOGIC ###
             if bottle_detected:
+
                 x_center = (x1_scaled + x2_scaled) // 2 - f_width // 2
                 y_center = (y1_scaled + y2_scaled) // 2 - f_height // 2
                 width = int(w / 224 * f_width)
@@ -143,3 +168,6 @@ def main():
         GPIO.cleanup()
         cv2.destroyAllWindows()
         picam2.stop()
+
+if __name__ == '__main__':
+    main()

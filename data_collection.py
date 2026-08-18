@@ -6,6 +6,7 @@ from PIL import Image
 import torch
 import cv2
 import motor_driver
+import RPi.GPIO as GPIO
 
 def main():
 
@@ -39,6 +40,8 @@ def main():
             key = cv2.waitKey(1) & 0xFF
 
             if key == ord(' '):
+                motor_driver.stop()
+                motor_active = False
                 answer = None
                 while answer not in ['y', 'n']:
                     answer = input('\nIs there a bottle?\n Bottle: y\n No Bottle: n\n')
@@ -95,6 +98,7 @@ def main():
         if tracker > 0:
             print(f'Bottle Ratio: {bottle_added_ratios/tracker:.2f}')
         picam2.stop()
+        GPIO.cleanup()
         cv2.destroyAllWindows()
 
 
