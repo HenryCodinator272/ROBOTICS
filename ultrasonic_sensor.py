@@ -6,8 +6,8 @@ except ImportError:
 
 #Channel Numbers instead of Location Number (numbers match on board)
 GPIO.setmode(GPIO.BOARD)
-trigPin = 23
-echoPin = 24
+trigPin = 32
+echoPin = 36
 GPIO.setup(trigPin, GPIO.OUT)
 GPIO.setup(echoPin, GPIO.IN)
 

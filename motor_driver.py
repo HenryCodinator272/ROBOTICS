@@ -6,14 +6,19 @@ import time
 
 GPIO.setmode(GPIO.BOARD)
 
-GPIO.setup(11, GPIO.OUT)
-GPIO.setup(29, GPIO.OUT)
+Motor1_PWM_Pin = 11
+Motor1_Dir_Pin = 13
+Motor2_PWM_Pin = 16
+Motor2_Dir_Pin = 18
 
-GPIO.setup(13, GPIO.OUT)
-GPIO.setup(31, GPIO.OUT)
+GPIO.setup(Motor1_Dir_Pin, GPIO.OUT)
+GPIO.setup(Motor1_PWM_Pin, GPIO.OUT)
 
-motor1Speed = GPIO.PWM(29, 1000) #1000 is the frequency
-motor2Speed = GPIO.PWM(31, 1000)
+GPIO.setup(Motor2_Dir_Pin, GPIO.OUT)
+GPIO.setup(Motor2_PWM_Pin, GPIO.OUT)
+
+motor1Speed = GPIO.PWM(Motor1_PWM_Pin, 1000) #1000 is the frequency
+motor2Speed = GPIO.PWM(Motor2_PWM_Pin, 1000)
 motor1Speed.start(0)
 motor2Speed.start(0)
 
@@ -28,8 +33,8 @@ def check_radius(radius):
 def forward(speed):
     check_speed(speed)
     print(f'Going forward at {speed} speed')
-    GPIO.output(11, True)
-    GPIO.output(13, True)
+    GPIO.output(Motor1_Dir_Pin, True)
+    GPIO.output(Motor2_Dir_Pin, True)
 
     motor1Speed.ChangeDutyCycle(speed)
     motor2Speed.ChangeDutyCycle(speed)
@@ -37,8 +42,8 @@ def forward(speed):
 def backward(speed):
     check_speed(speed)
     print(f'Going backward at {speed} speed')
-    GPIO.output(11, False)
-    GPIO.output(13, False)
+    GPIO.output(Motor1_Dir_Pin, False)
+    GPIO.output(Motor2_Dir_Pin, False)
 
     motor1Speed.ChangeDutyCycle(speed)
     motor2Speed.ChangeDutyCycle(speed)
@@ -46,8 +51,8 @@ def backward(speed):
 def left_forward(speed, r = 0, diff = 144): #diff --> distance_between_wheels ... r --> radius
     check_speed(speed)
     check_radius(r)
-    GPIO.output(11, True)
-    GPIO.output(13, True)
+    GPIO.output(Motor1_Dir_Pin, True)
+    GPIO.output(Motor2_Dir_Pin, True)
 
     inner_wheel_speed = r * speed / (r + diff)
     outer_wheel_speed = speed
@@ -58,8 +63,8 @@ def left_forward(speed, r = 0, diff = 144): #diff --> distance_between_wheels ..
 def left_backward(speed, r = 0, diff = 144):
     check_speed(speed)
     check_radius(r)
-    GPIO.output(11, False)
-    GPIO.output(13, False)
+    GPIO.output(Motor1_Dir_Pin, False)
+    GPIO.output(Motor2_Dir_Pin, False)
 
     inner_wheel_speed = r * speed / (r + diff)
     outer_wheel_speed = speed
@@ -70,8 +75,8 @@ def left_backward(speed, r = 0, diff = 144):
 def right_forward(speed, r=0, diff=144):  # diff --> distance_between_wheels ... r --> radius
     check_speed(speed)
     check_radius(r)
-    GPIO.output(11, True)
-    GPIO.output(13, True)
+    GPIO.output(Motor1_Dir_Pin, True)
+    GPIO.output(Motor2_Dir_Pin, True)
 
     inner_wheel_speed = r * speed / (r + diff)
     outer_wheel_speed = speed
@@ -82,8 +87,8 @@ def right_forward(speed, r=0, diff=144):  # diff --> distance_between_wheels ...
 def right_backward(speed, r=0, diff=144):
     check_speed(speed)
     check_radius(r)
-    GPIO.output(11, False)
-    GPIO.output(13, False)
+    GPIO.output(Motor1_Dir_Pin, False)
+    GPIO.output(Motor2_Dir_Pin, False)
 
     inner_wheel_speed = r * speed / (r + diff)
     outer_wheel_speed = speed
@@ -94,15 +99,15 @@ def right_backward(speed, r=0, diff=144):
 def scan(speed):
     check_speed(speed)
     print(f'Scanning at {speed} speed')
-    GPIO.output(11, True)
-    GPIO.output(13, False)
+    GPIO.output(Motor1_Dir_Pin, True)
+    GPIO.output(Motor2_Dir_Pin, False)
 
     motor1Speed.ChangeDutyCycle(speed)
     motor2Speed.ChangeDutyCycle(speed)
 
 def stop():
-    GPIO.output(11, False)
-    GPIO.output(13, False)
+    GPIO.output(Motor1_Dir_Pin, False)
+    GPIO.output(Motor2_Dir_Pin, False)
 
     motor1Speed.ChangeDutyCycle(0)
     motor2Speed.ChangeDutyCycle(0)
