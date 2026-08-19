@@ -17,7 +17,7 @@ def main():
     args = parser.parse_args()
 
     picam2 = Picamera2()
-    config = picam2.create_still_configuration(main = {'size': tuple(args.size)})
+    config = picam2.create_still_configuration(main={'size': tuple(args.size), 'format': 'RGB888'})
     picam2.configure(config)
     picam2.start()
     time.sleep(2)
@@ -98,6 +98,8 @@ def main():
         if tracker > 0:
             print(f'Bottle Ratio: {bottle_added_ratios/tracker:.2f}')
         picam2.stop()
+        motor_driver.motor1Speed.stop()
+        motor_driver.motor2Speed.stop()
         GPIO.cleanup()
         cv2.destroyAllWindows()
 

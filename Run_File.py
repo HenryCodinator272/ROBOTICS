@@ -24,7 +24,7 @@ def main():
     scan = False
 
     picam2 = Picamera2()
-    config = picam2.create_video_configuration() #picam2.create_still_configuration()
+    config = picam2.create_video_configuration(main={"format": "RGB888"}) #picam2.create_still_configuration()
     picam2.configure(config)
     picam2.start()
     time.sleep(2)
@@ -167,6 +167,8 @@ def main():
 
     finally:
         motor_driver.stop()
+        motor_driver.motor1Speed.stop()
+        motor_driver.motor2Speed.stop()
         GPIO.cleanup()
         cv2.destroyAllWindows()
         picam2.stop()

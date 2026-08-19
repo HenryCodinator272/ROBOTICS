@@ -7,7 +7,6 @@ class Bottle_Detection_Model(nn.Module):
         super().__init__()
         self.resnet = models.resnet18(weights=models.ResNet18_Weights.DEFAULT)
         self.resnet.fc = nn.Linear(512, 5)
-        print(self.resnet)
 
     def forward(self, inputs):
         out = self.resnet(inputs)
