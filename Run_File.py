@@ -90,7 +90,7 @@ def main():
                             scan = True
 
                             if motor_active:
-                                motor_driver.stop()
+                                motor_driver.brake()
                             motor_active = True
                             motor_driver.scan(10)
                             blind_scan_end_time = time.time() + 1.0
@@ -159,16 +159,18 @@ def main():
                         scan = True
 
                         if motor_active:
-                            motor_driver.stop()
+                            motor_driver.brake()
                         motor_active = True
                         motor_driver.scan(10)
 
 
 
     finally:
-        motor_driver.stop()
-        motor_driver.motor1Speed.stop()
-        motor_driver.motor2Speed.stop()
+        motor_driver.brake()
+        motor_driver.motor1Speed1.stop()
+        motor_driver.motor1Speed2.stop()
+        motor_driver.motor2Speed1.stop()
+        motor_driver.motor2Speed2.stop()
         GPIO.cleanup()
         cv2.destroyAllWindows()
         picam2.stop()

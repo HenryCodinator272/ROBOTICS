@@ -40,7 +40,7 @@ def main():
             key = cv2.waitKey(1) & 0xFF
 
             if key == ord(' '):
-                motor_driver.stop()
+                motor_driver.brake()
                 motor_active = False
                 answer = None
                 while answer not in ['y', 'n']:
@@ -77,6 +77,10 @@ def main():
             if key == ord('q'):
                 break
 
+            if key == ord('b'):
+                motor_driver.brake()
+                motor_active = False
+
             ###MOVEMENT
             if key in [ord('w'), ord('a'), ord('s'), ord('d')]:
                 motor_active = True
@@ -98,8 +102,11 @@ def main():
         if tracker > 0:
             print(f'Bottle Ratio: {bottle_added_ratios/tracker:.2f}')
         picam2.stop()
-        motor_driver.motor1Speed.stop()
-        motor_driver.motor2Speed.stop()
+        motor_driver.brake()
+        motor_driver.motor1Speed1.stop()
+        motor_driver.motor1Speed2.stop()
+        motor_driver.motor2Speed1.stop()
+        motor_driver.motor2Speed2.stop()
         GPIO.cleanup()
         cv2.destroyAllWindows()
 
